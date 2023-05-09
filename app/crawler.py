@@ -5,6 +5,7 @@ from util import is_valid_link, is_sliced_link, is_html
 
 class Crawler(Scraper):
     _PROVIDER: str
+    _URLS: list[str]
 
     def __init__(self, start_url: str, base_url: str, provider: str) -> None:
         super().__init__(start_url, base_url)
@@ -13,7 +14,6 @@ class Crawler(Scraper):
     def run(self, cap: int = 500) -> None:
         links = self._crawl(self._START_URL, cap)
         links = self._filter(links)
-        print(len(links))
         self._scrape(links)
 
     def _filter(self, links: list[str]) -> list[str]:
@@ -32,9 +32,12 @@ class Crawler(Scraper):
     def _process(self, link: str) -> None:
         page = super()._get_html(link)
 
-    def _crawl(self, url: str, cap: int) -> list[str]:
-        # TODO: implement graph traversing for links
+        if not page:
+            return
 
+        body = page.find("body")
+
+    def _crawl(self, url: str, cap: int) -> list[str]:
         visited = []
         queue = deque()
 
@@ -43,7 +46,6 @@ class Crawler(Scraper):
 
         while queue and len(visited) < cap:
             link_node = queue.popleft()
-            # height = visited[link_node]
 
             page = super()._get_html(link_node)
             if page:
@@ -52,6 +54,9 @@ class Crawler(Scraper):
                 links = []
 
             for link in links:
+                if link in self._URLS:
+                    continue
+
                 if link not in visited and (
                     is_valid_link(link, self._PROVIDER) or is_sliced_link(link)
                 ):
