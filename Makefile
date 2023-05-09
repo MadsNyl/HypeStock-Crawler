@@ -6,3 +6,6 @@ check:
 
 format:
 	black .
+
+run:
+	python main.py
