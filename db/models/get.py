@@ -1,2 +1,14 @@
 class GET_QUERY:
-    pass
+    @staticmethod
+    def tickers() -> str:
+        return """
+            SELECT symbol 
+            FROM stock
+        """
+
+    @staticmethod
+    def urls() -> str:
+        return """
+            SELECT url 
+            FROM article
+        """

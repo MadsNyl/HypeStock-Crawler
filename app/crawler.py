@@ -1,15 +1,24 @@
 from .scraper import Scraper
 from collections import deque
-from util import is_valid_link, is_sliced_link, is_html
+from util import is_valid_link, is_sliced_link, is_html, progressbar
+from classes import Article, Text
+from db import GET, INSERT
 
 
 class Crawler(Scraper):
     _PROVIDER: str
-    _URLS: list[str]
+    _URLS: list[str] = []
+    _TICKERS: dict[str]
+    _BASE_URL: str
+    _START_URL: str
 
     def __init__(self, start_url: str, base_url: str, provider: str) -> None:
         super().__init__(start_url, base_url)
         self._PROVIDER = provider
+        self._TICKERS = GET.tickers()
+        self._BASE_URL = base_url
+        self._START_URL = start_url
+        self._URLS = GET.urls()
 
     def run(self, cap: int = 500) -> None:
         links = self._crawl(self._START_URL, cap)
@@ -26,8 +35,10 @@ class Crawler(Scraper):
         return filtered_links
 
     def _scrape(self, links: list[str]) -> None:
-        for link in links:
+        progressbar(0, len(links), "Inserting articles: ")
+        for i, link in enumerate(links):
             self._process(link)
+            progressbar(i + 1, len(links))
 
     def _process(self, link: str) -> None:
         page = super()._get_html(link)
@@ -36,6 +47,11 @@ class Crawler(Scraper):
             return
 
         body = page.find("body")
+        hits = Text(body.text, self._TICKERS).hits
+        INSERT.article(Article(url=link, provider=self._PROVIDER, created_date=None))
+
+        for hit in hits:
+            INSERT.hit(link, hit)
 
     def _crawl(self, url: str, cap: int) -> list[str]:
         visited = []
@@ -66,5 +82,7 @@ class Crawler(Scraper):
                     else:
                         visited.append(link)
                         queue.append(link)
+
+                    self._URLS[link] = None
 
         return visited

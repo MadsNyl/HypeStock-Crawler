@@ -1,7 +1,6 @@
 CREATE TABLE article_stock (
     symbol varchar(10),
     article_url varchar(255),
-    PRIMARY KEY(symbol, article_ur),
     FOREIGN KEY(symbol) REFERENCES stock(symbol),
     FOREIGN KEY(article_url) REFERENCES article(url)
 )
