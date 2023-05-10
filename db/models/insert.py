@@ -11,6 +11,6 @@ class INSERT_QUERY:
     def hit() -> str:
         return """
             INSERT INTO article_stock
-            (symbol, article_url)
+            (symbol, article_id)
             VALUES (%s, %s)
         """

@@ -11,8 +11,20 @@ URLS = [
 
 
 def main():
-    c = Crawler("https://edition.cnn.com/business", "edition.cnn.com", "cnn")
-    c.run()
+    crawlers = [
+        # Crawler("https://edition.cnn.com/business", "edition.cnn.com", "cnn"),
+        # Crawler("https://www.cnbc.com/finance/", "www.cnbc.com", "cnbc"),
+        # Crawler("https://www.nasdaq.com/news-and-insights", "www.nasdaq.com", "nasdaq"),
+        Crawler(
+            "https://finance.yahoo.com/topic/stock-market-news/",
+            "finance.yahoo.com",
+            "yahoo",
+        ),
+        Crawler("https://www.ft.com/markets", "www.ft.com", "ft"),
+    ]
+
+    for c in crawlers:
+        c.run()
 
 
 if __name__ == "__main__":

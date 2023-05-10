@@ -1,6 +1,6 @@
 from .scraper import Scraper
 from collections import deque
-from util import is_valid_link, is_sliced_link, is_html, progressbar
+from util import is_valid_link, is_sliced_link, is_html, progressbar, is_id_string
 from classes import Article, Text
 from db import GET, INSERT
 
@@ -29,12 +29,14 @@ class Crawler(Scraper):
         filtered_links = []
 
         for link in links:
-            if is_html(link):
+            if is_html(link) or is_id_string(link):
                 filtered_links.append(link)
 
         return filtered_links
 
     def _scrape(self, links: list[str]) -> None:
+        if not len(links):
+            return
         progressbar(0, len(links), "Inserting articles: ")
         for i, link in enumerate(links):
             self._process(link)
@@ -47,11 +49,24 @@ class Crawler(Scraper):
             return
 
         body = page.find("body")
+
+        if not body:
+            return
+
         hits = Text(body.text, self._TICKERS).hits
-        INSERT.article(Article(url=link, provider=self._PROVIDER, created_date=None))
+
+        if not len(hits):
+            return
+
+        article_id = INSERT.article(
+            Article(url=link, provider=self._PROVIDER, created_date=None)
+        )
+
+        if not article_id:
+            return
 
         for hit in hits:
-            INSERT.hit(link, hit)
+            INSERT.hit(article_id, hit)
 
     def _crawl(self, url: str, cap: int) -> list[str]:
         visited = []
@@ -73,16 +88,12 @@ class Crawler(Scraper):
                 if link in self._URLS:
                     continue
 
-                if link not in visited and (
-                    is_valid_link(link, self._PROVIDER) or is_sliced_link(link)
-                ):
-                    if is_sliced_link(link):
-                        visited.append(f"https://{self._BASE_URL}{link}")
-                        queue.append(f"https://{self._BASE_URL}{link}")
-                    else:
-                        visited.append(link)
-                        queue.append(link)
+                if is_sliced_link(link):
+                    link = f"https://{self._BASE_URL}{link}"
 
+                if link not in visited and is_valid_link(link, self._PROVIDER):
+                    visited.append(link)
+                    queue.append(link)
                     self._URLS[link] = None
 
         return visited
