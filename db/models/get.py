@@ -9,6 +9,7 @@ class GET_QUERY:
     @staticmethod
     def urls() -> str:
         return """
-            SELECT url 
+            SELECT url
             FROM article
+            WHERE provider = %s
         """

@@ -18,13 +18,13 @@ class GET:
             print(f"Fetching all tickers error: {e}")
 
     @staticmethod
-    def urls() -> dict:
+    def urls(provider: str) -> dict:
         """
         Returns all tickers as a dict.
         """
 
         try:
-            pool.execute(GET_QUERY.urls())
+            pool.execute(GET_QUERY.urls(), (provider,))
 
             return dict.fromkeys(list(map(lambda x: x[0], pool.fetchall())))
 

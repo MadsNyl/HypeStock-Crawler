@@ -25,7 +25,7 @@ class Crawler(Scraper):
         self._TICKERS = GET.tickers()
         self._BASE_URL = base_url
         self._START_URL = start_url
-        self._URLS = GET.urls()
+        self._URLS = GET.urls(provider)
 
     def run(self, cap: int = 500) -> None:
         links = self._crawl(self._START_URL, cap)
@@ -44,6 +44,7 @@ class Crawler(Scraper):
     def _process_article(self, links: list[str]) -> None:
         if not len(links):
             return
+
         progressbar(0, len(links), "Inserting articles: ")
         for i, link in enumerate(links):
             self._scrape(link)
@@ -55,20 +56,20 @@ class Crawler(Scraper):
         if not page:
             return
 
-        meta_title = page.find("meta", attrs={"property": "og:title"})
+        meta_title = super()._find(page, "meta", property="og:title")
         title = None
         if meta_title:
             title = meta_title.get("content")
 
-        meta_created_date = page.find(
-            "meta", attrs={"property": "article:published_time"}
+        meta_created_date = super()._find(
+            page, "meta", property="article:published_time"
         )
         created_date = None
         if meta_created_date:
             created_date = meta_created_date.get("content")
             created_date = string_to_datetime(created_date)
 
-        body = page.find("body")
+        body = super()._find(page, "body")
 
         if not body:
             return

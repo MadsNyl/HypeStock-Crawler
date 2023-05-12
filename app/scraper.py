@@ -22,3 +22,6 @@ class Scraper:
     def _get_links(self, page: str) -> list[str]:
         links = page.find_all("a", href=True)
         return list(map(lambda x: x["href"], links))
+
+    def _find(self, soup, tag: str, **kwargs):
+        return soup.find(tag, attrs=kwargs)
