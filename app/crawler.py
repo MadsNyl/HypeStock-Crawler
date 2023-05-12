@@ -73,10 +73,9 @@ class Crawler(Scraper):
         if not body:
             return
 
-        article_parser = ArticleParser(body.text, self._TICKERS)
-        ticker_hits = article_parser.hits
+        article_parser = ArticleParser(body.text, self._TICKERS, self._PROVIDER)
 
-        if not len(ticker_hits):
+        if not len(article_parser):
             return
 
         article_id = INSERT.article(
@@ -91,7 +90,7 @@ class Crawler(Scraper):
         if not article_id:
             return
 
-        for hit in ticker_hits:
+        for hit in article_parser.hits:
             INSERT.hit(article_id, hit)
 
     def _crawl(self, url: str, cap: int) -> list[str]:

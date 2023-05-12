@@ -1,29 +1,35 @@
 class ArticleParser:
     _text: list[str]
-    _hits: list[str]
+    _hits = set()
     _TICKERS: dict[str]
+    _provider: str
 
-    def __init__(self, text: str, tickers: dict[str]) -> None:
+    def __init__(self, text: str, tickers: dict[str], provider: str) -> None:
         self._text = self._strip_parenthesis(text)
         self._TICKERS = tickers
-        self._hits = self._get_hits()
+        self._provider = provider
+        self._get_hits()
+
+    def __len__(self) -> int:
+        return len(self._hits)
+
+    def __getitem__(self, index) -> str:
+        return self._hits[index]
 
     @property
     def hits(self) -> list[str]:
         return self._hits
 
-    def _get_hits(self) -> list[str]:
-        hits: str = []
-
-        # TODO: check for providers
+    def _get_hits(self) -> None:
         for word in self._text:
-            if word in hits:
+            if self._is_provider(word):
                 continue
 
             if word in self._TICKERS:
-                hits.append(word)
+                self._hits.add(word)
 
-        return hits
+    def _is_provider(self, word: str) -> bool:
+        return word == self._provider.upper()
 
     def _strip_parenthesis(self, text: str) -> list[str]:
         return list(
