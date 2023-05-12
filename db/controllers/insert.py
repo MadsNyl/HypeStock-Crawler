@@ -10,7 +10,21 @@ class INSERT:
         Inserts an article.
         """
         try:
-            pool.execute(INSERT_QUERY.article(), (article.url, article.provider))
+            if article.created_date:
+                pool.execute(
+                    INSERT_QUERY.article_with_date(),
+                    (
+                        article.url,
+                        article.title,
+                        article.provider,
+                        article.created_date,
+                    ),
+                )
+            else:
+                pool.execute(
+                    INSERT_QUERY.article(),
+                    (article.url, article.title, article.provider),
+                )
 
             db.commit()
 

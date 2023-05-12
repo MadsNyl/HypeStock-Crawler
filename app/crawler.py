@@ -1,13 +1,20 @@
 from .scraper import Scraper
 from collections import deque
-from util import is_valid_link, is_sliced_link, is_html, progressbar, is_id_string
-from classes import Article, Text
+from classes import Article, ArticleParser
 from db import GET, INSERT
+from util import (
+    is_valid_link,
+    is_sliced_link,
+    is_html,
+    progressbar,
+    is_id_string,
+    string_to_datetime,
+)
 
 
 class Crawler(Scraper):
     _PROVIDER: str
-    _URLS: list[str] = []
+    _URLS: dict[str]
     _TICKERS: dict[str]
     _BASE_URL: str
     _START_URL: str
@@ -23,7 +30,7 @@ class Crawler(Scraper):
     def run(self, cap: int = 500) -> None:
         links = self._crawl(self._START_URL, cap)
         links = self._filter(links)
-        self._scrape(links)
+        self._process_article(links)
 
     def _filter(self, links: list[str]) -> list[str]:
         filtered_links = []
@@ -34,45 +41,64 @@ class Crawler(Scraper):
 
         return filtered_links
 
-    def _scrape(self, links: list[str]) -> None:
+    def _process_article(self, links: list[str]) -> None:
         if not len(links):
             return
         progressbar(0, len(links), "Inserting articles: ")
         for i, link in enumerate(links):
-            self._process(link)
+            self._scrape(link)
             progressbar(i + 1, len(links))
 
-    def _process(self, link: str) -> None:
+    def _scrape(self, link: str) -> None:
         page = super()._get_html(link)
 
         if not page:
             return
+
+        meta_title = page.find("meta", attrs={"property": "og:title"})
+        title = None
+        if meta_title:
+            title = meta_title.get("content")
+
+        meta_created_date = page.find(
+            "meta", attrs={"property": "article:published_time"}
+        )
+        created_date = None
+        if meta_created_date:
+            created_date = meta_created_date.get("content")
+            created_date = string_to_datetime(created_date)
 
         body = page.find("body")
 
         if not body:
             return
 
-        hits = Text(body.text, self._TICKERS).hits
+        article_parser = ArticleParser(body.text, self._TICKERS)
+        ticker_hits = article_parser.hits
 
-        if not len(hits):
+        if not len(ticker_hits):
             return
 
         article_id = INSERT.article(
-            Article(url=link, provider=self._PROVIDER, created_date=None)
+            Article(
+                url=link,
+                provider=self._PROVIDER,
+                created_date=created_date,
+                title=title,
+            )
         )
 
         if not article_id:
             return
 
-        for hit in hits:
+        for hit in ticker_hits:
             INSERT.hit(article_id, hit)
 
     def _crawl(self, url: str, cap: int) -> list[str]:
-        visited = []
+        visited = set()
         queue = deque()
 
-        visited.append(url)
+        visited.add(url)
         queue.append(url)
 
         while queue and len(visited) < cap:
@@ -85,14 +111,14 @@ class Crawler(Scraper):
                 links = []
 
             for link in links:
-                if link in self._URLS:
-                    continue
-
                 if is_sliced_link(link):
                     link = f"https://{self._BASE_URL}{link}"
 
+                if link in self._URLS or link in visited:
+                    continue
+
                 if link not in visited and is_valid_link(link, self._PROVIDER):
-                    visited.append(link)
+                    visited.add(link)
                     queue.append(link)
                     self._URLS[link] = None
 

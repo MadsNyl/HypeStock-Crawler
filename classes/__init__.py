@@ -1,2 +1,2 @@
 from .article import Article
-from .text import Text
+from .articleParser import ArticleParser

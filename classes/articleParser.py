@@ -1,4 +1,4 @@
-class Text:
+class ArticleParser:
     _text: list[str]
     _hits: list[str]
     _TICKERS: dict[str]
@@ -15,6 +15,7 @@ class Text:
     def _get_hits(self) -> list[str]:
         hits: str = []
 
+        # TODO: check for providers
         for word in self._text:
             if word in hits:
                 continue

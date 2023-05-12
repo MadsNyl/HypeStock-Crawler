@@ -3,8 +3,16 @@ class INSERT_QUERY:
     def article() -> str:
         return """
             INSERT INTO article
-            (url, provider)
-            VALUES (%s, %s)
+            (url, title, provider)
+            VALUES (%s, %s, %s)
+        """
+
+    @staticmethod
+    def article_with_date() -> str:
+        return """
+            INSERT INTO article
+            (url, title, provider, created_date)
+            VALUES (%s, %s, %s, %s)
         """
 
     @staticmethod

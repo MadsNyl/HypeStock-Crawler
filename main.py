@@ -12,8 +12,8 @@ URLS = [
 
 def main():
     crawlers = [
-        # Crawler("https://edition.cnn.com/business", "edition.cnn.com", "cnn"),
-        # Crawler("https://www.cnbc.com/finance/", "www.cnbc.com", "cnbc"),
+        Crawler("https://edition.cnn.com/business", "edition.cnn.com", "cnn"),
+        Crawler("https://www.cnbc.com/finance/", "www.cnbc.com", "cnbc"),
         # Crawler("https://www.nasdaq.com/news-and-insights", "www.nasdaq.com", "nasdaq"),
         Crawler(
             "https://finance.yahoo.com/topic/stock-market-news/",
