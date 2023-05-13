@@ -9,6 +9,7 @@ from util import (
     progressbar,
     is_id_string,
     string_to_datetime,
+    build_link,
 )
 
 
@@ -91,7 +92,7 @@ class Crawler(Scraper):
         if not article_id:
             return
 
-        for hit in article_parser.hits:
+        for hit in article_parser:
             INSERT.hit(article_id, hit)
 
     def _crawl(self, url: str, cap: int) -> list[str]:
@@ -112,7 +113,7 @@ class Crawler(Scraper):
 
             for link in links:
                 if is_sliced_link(link):
-                    link = f"https://{self._BASE_URL}{link}"
+                    link = build_link(self._BASE_URL, link)
 
                 if link in self._URLS or link in visited:
                     continue

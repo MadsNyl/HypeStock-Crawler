@@ -10,25 +10,24 @@ class ArticleParser:
         self._provider = provider
         self.__get_hits()
 
+    def __iter__(self) -> list[str]:
+        return iter(self._hits)
+
     def __len__(self) -> int:
         return len(self._hits)
 
     def __getitem__(self, index) -> str:
         return self._hits[index]
 
-    @property
-    def hits(self) -> list[str]:
-        return self._hits
-
     def __get_hits(self) -> None:
         for index, word in enumerate(self._text):
-            if self.__is_provider(word):
-                continue
-
-            if self.__is_start_of_sentence_pronoun(word, index):
-                continue
-
             if word in self._TICKERS:
+                if self.__is_provider(word):
+                    continue
+
+                if self.__is_start_of_sentence_pronoun(word, index):
+                    continue
+
                 if self.__is_in_uppercase_sentence(index):
                     continue
 

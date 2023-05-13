@@ -1,6 +1,6 @@
 from db import pool, db
 from db.models import INSERT_QUERY
-from classes import Article
+from classes import Article, Provider
 
 
 class INSERT:
@@ -43,3 +43,18 @@ class INSERT:
             db.commit()
         except Exception as e:
             print(f"Inserting article and stock error: {e}")
+
+    @staticmethod
+    def provider(provider: Provider) -> None:
+        """
+        Inserts an provider.
+        """
+        try:
+            pool.execute(
+                INSERT_QUERY.provider(),
+                (provider.provider, provider.start_url, provider.base_url),
+            )
+
+            db.commit()
+        except Exception as e:
+            print(f"Inserting provider error: {e}")

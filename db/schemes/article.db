@@ -5,5 +5,6 @@ CREATE TABLE article (
     provider varchar(255),
     created_date datetime DEFAULT NOW(),
     PRIMARY KEY (id),
+    FOREIGN KEY (provider) REFERENCES provider (provider),
     UNIQUE(url)
-)
+);

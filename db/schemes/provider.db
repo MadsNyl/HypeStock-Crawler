@@ -1,0 +1,18 @@
+CREATE TABLE provider(
+    provider varchar(255),
+    start_url varchar(255),
+    base_url varchar(255),
+    PRIMARY KEY (provider)
+);
+
+INSERT INTO provider (provider, start_url, base_url)
+VALUES ("cnn", "https://edition.cnn.com/business", "edition.cnn.com");
+
+INSERT INTO provider (provider, start_url, base_url)
+VALUES ("cnbc", "https://www.cnbc.com/finance/", "www.cnbc.com");
+
+INSERT INTO provider (provider, start_url, base_url)
+VALUES ("yahoo", "https://finance.yahoo.com/topic/stock-market-news/", "finance.yahoo.com");
+
+INSERT INTO provider (provider, start_url, base_url)
+VALUES ("ft", "https://www.ft.com/markets", "www.ft.com");

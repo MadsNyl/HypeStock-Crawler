@@ -8,4 +8,15 @@ format:
 	black .
 
 run:
-	python main.py
+	python main.py ${args}
+
+down:
+	python down.py
+
+up:
+	python up.py
+
+fresh:
+	make down
+	make up
+	make run ${args}

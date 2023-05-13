@@ -1,30 +1,19 @@
 from app import Crawler
 from util import timer
-
-URLS = [
-    "https://edition.cnn.com/business",
-    "https://www.nasdaq.com/news-and-insights/markets",
-    "https://finance.yahoo.com/topic/stock-market-news/",
-    "https://www.cnbc.com/finance/",
-    "https://www.ft.com/markets",
-]
+from db import GET
+import sys
 
 
 def main():
-    crawlers = [
-        Crawler("https://edition.cnn.com/business", "edition.cnn.com", "cnn"),
-        Crawler("https://www.cnbc.com/finance/", "www.cnbc.com", "cnbc"),
-        # Crawler("https://www.nasdaq.com/news-and-insights", "www.nasdaq.com", "nasdaq"),
-        Crawler(
-            "https://finance.yahoo.com/topic/stock-market-news/",
-            "finance.yahoo.com",
-            "yahoo",
-        ),
-        Crawler("https://www.ft.com/markets", "www.ft.com", "ft"),
-    ]
+    PROVIDERS = GET.providers()
+    cap = 500
 
-    for c in crawlers:
-        c.run()
+    if len(sys.argv) > 1:
+        cap = int(sys.argv[1])
+
+    for provider in PROVIDERS:
+        crawler = Crawler(provider[1], provider[2], provider[0])
+        crawler.run(cap)
 
 
 if __name__ == "__main__":

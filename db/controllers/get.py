@@ -30,3 +30,17 @@ class GET:
 
         except Exception as e:
             print(f"Fetching all urls error: {e}")
+
+    @staticmethod
+    def providers() -> list:
+        """
+        Returns all providers as a list.
+        """
+
+        try:
+            pool.execute(GET_QUERY.providers())
+
+            return pool.fetchall()
+
+        except Exception as e:
+            print(f"Fetching providers error: {e}")

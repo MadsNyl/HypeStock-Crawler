@@ -2,7 +2,7 @@ class GET_QUERY:
     @staticmethod
     def tickers() -> str:
         return """
-            SELECT symbol 
+            SELECT symbol
             FROM stock
         """
 
@@ -12,4 +12,11 @@ class GET_QUERY:
             SELECT url
             FROM article
             WHERE provider = %s
+        """
+
+    @staticmethod
+    def providers() -> str:
+        return """
+            SELECT *
+            FROM provider
         """

@@ -22,3 +22,10 @@ class INSERT_QUERY:
             (symbol, article_id)
             VALUES (%s, %s)
         """
+
+    @staticmethod
+    def provider() -> str:
+        return """
+            INSERT INTO provider (provider, start_url, base_url)
+            VALUES (%s, %s, %s)
+        """
