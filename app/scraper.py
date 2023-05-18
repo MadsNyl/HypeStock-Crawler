@@ -1,6 +1,6 @@
-import requests
 from bs4 import BeautifulSoup
 from settings import USER_AGENT
+from util import http_get, http_get_async
 
 
 class Scraper:
@@ -14,10 +14,21 @@ class Scraper:
     def _get_html(self, url: str) -> str:
         try:
             headers = {"User-Agent": USER_AGENT}
-            res = requests.get(url, headers=headers, timeout=2)
+            res = http_get(url=url, headers=headers, timeout=2)
             return BeautifulSoup(res.text, "html.parser")
         except Exception as e:
             print(f"Fetching url error: {e}")
+
+    async def _get_html_async(self, url: str) -> str:
+        try:
+            headers = {"User-Agent": USER_AGENT}
+            res = await http_get_async(url=url, headers=headers, timeout=2)
+            return BeautifulSoup(res.text, "html.parser")
+        except Exception as e:
+            print(f"Fetching async url error: {e}")
+
+    def _to_html(self, text: str) -> str:
+        return BeautifulSoup(text, "html.parser")
 
     def _get_links(self, page: str) -> list[str]:
         links = page.find_all("a", href=True)

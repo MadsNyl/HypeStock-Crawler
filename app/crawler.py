@@ -1,3 +1,4 @@
+import asyncio
 from .scraper import Scraper
 from collections import deque
 from classes import Article, ArticleParser
@@ -29,30 +30,17 @@ class Crawler(Scraper):
         self._URLS = GET.urls(provider)
 
     def run(self, cap: int = 500) -> None:
-        links = self._crawl(self._START_URL, cap)
-        links = self._filter(links)
-        self._process_article(links)
+        links = self._crawl(cap)
+        asyncio.run(self._process_articles(links))
 
-    def _filter(self, links: list[str]) -> list[str]:
-        filtered_links = []
-
-        for link in links:
-            if is_html(link) or is_id_string(link):
-                filtered_links.append(link)
-
-        return filtered_links
-
-    def _process_article(self, links: list[str]) -> None:
+    async def _process_articles(self, links: list[str]) -> None:
         if not len(links):
             return
 
-        progressbar(0, len(links), "Inserting articles: ")
-        for i, link in enumerate(links):
-            self._scrape(link)
-            progressbar(i + 1, len(links))
+        await asyncio.gather(*[self._scrape(link) for link in links])
 
-    def _scrape(self, link: str) -> None:
-        page = super()._get_html(link)
+    async def _scrape(self, url: str) -> None:
+        page = await super()._get_html_async(url)
 
         if not page:
             return
@@ -82,7 +70,7 @@ class Crawler(Scraper):
 
         article_id = INSERT.article(
             Article(
-                url=link,
+                url=url,
                 provider=self._PROVIDER,
                 created_date=created_date,
                 title=title,
@@ -95,17 +83,17 @@ class Crawler(Scraper):
         for hit in article_parser:
             INSERT.hit(article_id, hit)
 
-    def _crawl(self, url: str, cap: int) -> list[str]:
+    def _crawl(self, cap: int) -> list[str]:
         visited = set()
         queue = deque()
 
-        visited.add(url)
-        queue.append(url)
+        visited.add(self._START_URL)
+        queue.append(self._START_URL)
 
         while queue and len(visited) < cap:
             link_node = queue.popleft()
-
             page = super()._get_html(link_node)
+
             if page:
                 links = super()._get_links(page)
             else:
@@ -118,7 +106,11 @@ class Crawler(Scraper):
                 if link in self._URLS or link in visited:
                     continue
 
-                if link not in visited and is_valid_link(link, self._PROVIDER):
+                if (
+                    link not in visited
+                    and is_valid_link(link, self._PROVIDER)
+                    and (is_html(link) or is_id_string(link))
+                ):
                     visited.add(link)
                     queue.append(link)
                     self._URLS[link] = None
