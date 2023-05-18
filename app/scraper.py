@@ -11,18 +11,24 @@ class Scraper:
         self._START_URL = start_url
         self._BASE_URL = base_url
 
-    def _get_html(self, url: str) -> str:
+    def _get_html(self, url: str, proxy: str) -> str:
         try:
             headers = {"User-Agent": USER_AGENT}
-            res = http_get(url=url, headers=headers, timeout=2)
+            proxies = {"http": f"http://{proxy}"}
+
+            res = http_get(url=url, headers=headers, timeout=2, proxies=proxies)
             return BeautifulSoup(res.text, "html.parser")
         except Exception as e:
             print(f"Fetching url error: {e}")
 
-    async def _get_html_async(self, url: str) -> str:
+    async def _get_html_async(self, url: str, proxy: str) -> str:
         try:
             headers = {"User-Agent": USER_AGENT}
-            res = await http_get_async(url=url, headers=headers, timeout=2)
+            proxies = {"http": f"http://{proxy}"}
+
+            res = await http_get_async(
+                url=url, headers=headers, timeout=2, proxies=proxies
+            )
             return BeautifulSoup(res.text, "html.parser")
         except Exception as e:
             print(f"Fetching async url error: {e}")

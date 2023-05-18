@@ -1,7 +1,7 @@
 import asyncio
 from .scraper import Scraper
 from collections import deque
-from classes import Article, ArticleParser
+from classes import Article, ArticleParser, ProxyList
 from db import GET, INSERT
 from util import (
     is_valid_link,
@@ -20,6 +20,7 @@ class Crawler(Scraper):
     _TICKERS: dict[str]
     _BASE_URL: str
     _START_URL: str
+    _proxies: ProxyList
 
     def __init__(self, start_url: str, base_url: str, provider: str) -> None:
         super().__init__(start_url, base_url)
@@ -28,6 +29,7 @@ class Crawler(Scraper):
         self._BASE_URL = base_url
         self._START_URL = start_url
         self._URLS = GET.urls(provider)
+        self._proxies = ProxyList()
 
     def run(self, cap: int = 500) -> None:
         links = self._crawl(cap)
@@ -40,7 +42,8 @@ class Crawler(Scraper):
         await asyncio.gather(*[self._scrape(link) for link in links])
 
     async def _scrape(self, url: str) -> None:
-        page = await super()._get_html_async(url)
+        page = await super()._get_html_async(url, self._proxies.proxy)
+        self._proxies.next()
 
         if not page:
             return
@@ -92,7 +95,8 @@ class Crawler(Scraper):
 
         while queue and len(visited) < cap:
             link_node = queue.popleft()
-            page = super()._get_html(link_node)
+            page = super()._get_html(link_node, self._proxies.proxy)
+            self._proxies.next()
 
             if page:
                 links = super()._get_links(page)

@@ -12,6 +12,7 @@ def http_get(url: str, **kwargs) -> JSONObject:
     timeout = kwargs.get("timeout")
     allow_redirects = kwargs.get("allow_redirects")
     data = kwargs.get("data")
+    proxies = kwargs.get("proxies")
 
     return requests.get(
         url,
@@ -20,6 +21,7 @@ def http_get(url: str, **kwargs) -> JSONObject:
         timeout=timeout,
         allow_redirects=allow_redirects,
         data=data,
+        proxies=proxies,
     )
 
 
