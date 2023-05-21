@@ -6,6 +6,7 @@ class ArticleParser:
 
     def __init__(self, text: str, tickers: dict[str], provider: str) -> None:
         self._text = self.__strip_parenthesis(text)
+        print(len(self._text))
         self._TICKERS = tickers
         self._provider = provider
         self.__get_hits()

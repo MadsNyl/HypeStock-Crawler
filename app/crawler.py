@@ -11,6 +11,7 @@ from util import (
     is_id_string,
     string_to_datetime,
     build_link,
+    is_article,
 )
 
 
@@ -31,7 +32,7 @@ class Crawler(Scraper):
         self._URLS = GET.urls(provider)
         self._proxies = ProxyList()
 
-    def run(self, cap: int = 500) -> None:
+    def run(self, cap: int = 100) -> None:
         links = self._crawl(cap)
         asyncio.run(self._process_articles(links))
 
@@ -48,18 +49,7 @@ class Crawler(Scraper):
         if not page:
             return
 
-        meta_title = super()._find(page, "meta", property="og:title")
-        title = None
-        if meta_title:
-            title = meta_title.get("content")
-
-        meta_created_date = super()._find(
-            page, "meta", property="article:published_time"
-        )
-        created_date = None
-        if meta_created_date:
-            created_date = meta_created_date.get("content")
-            created_date = string_to_datetime(created_date)
+        metadata = super()._get_metadata(page)
 
         body = super()._find(page, "body")
 
@@ -75,8 +65,8 @@ class Crawler(Scraper):
             Article(
                 url=url,
                 provider=self._PROVIDER,
-                created_date=created_date,
-                title=title,
+                created_date=metadata.created_date,
+                title=metadata.title,
             )
         )
 
@@ -110,10 +100,8 @@ class Crawler(Scraper):
                 if link in self._URLS or link in visited:
                     continue
 
-                if (
-                    link not in visited
-                    and is_valid_link(link, self._PROVIDER)
-                    and (is_html(link) or is_id_string(link))
+                if is_article(
+                    visited=visited, link=link, provider=self._PROVIDER, page=page
                 ):
                     visited.add(link)
                     queue.append(link)

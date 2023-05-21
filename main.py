@@ -6,7 +6,7 @@ import sys
 
 def main():
     PROVIDERS = GET.providers()
-    cap = 500
+    cap = 100
 
     if len(sys.argv) > 1:
         cap = int(sys.argv[1])

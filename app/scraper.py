@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from settings import USER_AGENT
-from util import http_get, http_get_async
+from util import http_get, http_get_async, string_to_datetime
+from classes import MetaData
 
 
 class Scraper:
@@ -42,3 +43,17 @@ class Scraper:
 
     def _find(self, soup, tag: str, **kwargs):
         return soup.find(tag, attrs=kwargs)
+
+    def _get_metadata(self, page: str) -> MetaData:
+        meta_title = self._find(page, "meta", property="og:title")
+        title = None
+        if meta_title:
+            title = meta_title.get("content")
+
+        meta_created_date = self._find(page, "meta", property="article:published_time")
+        created_date = None
+        if meta_created_date:
+            created_date = meta_created_date.get("content")
+            created_date = string_to_datetime(created_date)
+
+        return MetaData(title=title, created_date=created_date)
