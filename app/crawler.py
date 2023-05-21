@@ -3,16 +3,7 @@ from .scraper import Scraper
 from collections import deque
 from classes import Article, ArticleParser, ProxyList
 from db import GET, INSERT
-from util import (
-    is_valid_link,
-    is_sliced_link,
-    is_html,
-    progressbar,
-    is_id_string,
-    string_to_datetime,
-    build_link,
-    is_article,
-)
+from util import is_sliced_link, build_link, is_article, is_mail_link
 
 
 class Crawler(Scraper):
@@ -94,6 +85,9 @@ class Crawler(Scraper):
                 links = []
 
             for link in links:
+                if is_mail_link(link):
+                    continue
+
                 if is_sliced_link(link):
                     link = build_link(self._BASE_URL, link)
 

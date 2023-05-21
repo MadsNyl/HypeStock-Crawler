@@ -5,6 +5,10 @@ def is_valid_link(link: str, key: str) -> bool:
     return key.lower() in link.lower()
 
 
+def is_mail_link(link: str) -> bool:
+    return link.startswith("mailto")
+
+
 def is_sliced_link(link: str) -> bool:
     return link.startswith("/")
 
@@ -18,12 +22,20 @@ def is_id_string(link: str) -> bool:
     return bool(re.search(pattern, link))
 
 
-def is_paywall(link: str, page: str) -> bool:
-    pattern = re.compile("keep reading", re.IGNORECASE)
-    tags = page.find_all("a", text=pattern)
+def is_paywall(page: str) -> bool:
+    pattern = re.compile(r"^/signup.*", re.IGNORECASE)
+    tags = page.find_all("a", href=pattern)
+    print(tags)
     if tags:
         return True
     return False
+
+
+def is_missing_title(page: str) -> bool:
+    title = page.find("meta", property="og:title")
+    if title:
+        return False
+    return True
 
 
 def is_article(visited: set, link: str, provider: str, page: str) -> bool:
@@ -36,7 +48,7 @@ def is_article(visited: set, link: str, provider: str, page: str) -> bool:
     if not is_html(link) and not is_id_string(link):
         return False
 
-    if is_paywall(link, page):
+    if is_missing_title(page):
         return False
 
     common_html_tags = ["article", "section", "div"]

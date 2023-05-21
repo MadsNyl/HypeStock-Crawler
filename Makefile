@@ -19,4 +19,3 @@ up:
 fresh:
 	make down
 	make up
-	make run ${args}
