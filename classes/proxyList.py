@@ -1,5 +1,6 @@
 import requests
 from settings import PROXIES
+from random import choice
 
 
 class ProxyList:
@@ -20,8 +21,9 @@ class ProxyList:
         return self._proxies[index]
 
     @property
-    def proxy(self) -> str:
-        return self._proxies[self._current_index]
+    def proxy(self) -> str | None:
+        if not len(self._proxies): return None
+        return choice(self._proxies)
 
     def next(self) -> None:
         if not len(self._proxies):

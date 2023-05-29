@@ -7,22 +7,7 @@ JSONObject = dict[str, JSON]
 
 
 def http_get(url: str, **kwargs) -> JSONObject:
-    params = kwargs.get("params")
-    headers = kwargs.get("headers")
-    timeout = kwargs.get("timeout")
-    allow_redirects = kwargs.get("allow_redirects")
-    data = kwargs.get("data")
-    proxies = kwargs.get("proxies")
-
-    return requests.get(
-        url,
-        params=params,
-        headers=headers,
-        timeout=timeout,
-        allow_redirects=allow_redirects,
-        data=data,
-        proxies=proxies,
-    )
+    return requests.get(url, **kwargs)
 
 
 async def http_get_async(url: str, **kwargs) -> JSONObject:
