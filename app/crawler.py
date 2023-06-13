@@ -1,9 +1,15 @@
 import asyncio
 from .scraper import Scraper
 from collections import deque
-from classes import Article, ArticleParser, ProxyList
+from classes import ArticleParser, ProxyList, Article
 from db import GET, INSERT
-from util import is_sliced_link, build_link, is_article, is_mail_link
+from enums import HTMLTag
+from util import (
+    is_sliced_link,
+    build_link,
+    is_article,
+    is_mail_link
+)
 
 
 class Crawler(Scraper):
@@ -42,7 +48,7 @@ class Crawler(Scraper):
 
         metadata = super()._get_metadata(page)
 
-        body = super()._find(page, "body")
+        body = super()._find(page, HTMLTag.BODY.value)
 
         if not body:
             return
@@ -79,10 +85,9 @@ class Crawler(Scraper):
             page = super()._get_html(link_node, self._proxies.proxy)
             self._proxies.next()
 
+            links: list[str] = []
             if page:
                 links = super()._get_links(page)
-            else:
-                links = []
 
             for link in links:
                 if is_mail_link(link):

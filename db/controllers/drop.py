@@ -3,6 +3,7 @@ from db.models import DROP_QUERY
 
 
 class DROP:
+    
     @staticmethod
     def down() -> None:
         """

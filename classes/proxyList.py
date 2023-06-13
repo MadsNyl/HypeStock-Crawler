@@ -9,7 +9,7 @@ class ProxyList:
     _current_index: int = 0
 
     def __init__(self) -> None:
-        self.__get_proxies()
+        self._get_proxies()
 
     def __iter__(self) -> list[str]:
         return self._proxies
@@ -34,7 +34,7 @@ class ProxyList:
         else:
             self._current_index += 1
 
-    def __get_proxies(self) -> None:
+    def _get_proxies(self) -> None:
         response = requests.get(self._PROXIES_URL)
 
         if response.status_code != 200:

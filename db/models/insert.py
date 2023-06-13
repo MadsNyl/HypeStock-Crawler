@@ -1,4 +1,5 @@
 class INSERT_QUERY:
+    
     @staticmethod
     def article() -> str:
         return """

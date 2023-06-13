@@ -1,4 +1,5 @@
 class DROP_QUERY:
+    
     @staticmethod
     def article_stock() -> str:
         return """

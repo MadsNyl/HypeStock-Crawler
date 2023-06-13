@@ -3,6 +3,7 @@ from db import pool, db
 
 
 class CREATE:
+    
     @staticmethod
     def up():
         """

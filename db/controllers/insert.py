@@ -4,6 +4,7 @@ from classes import Article, Provider
 
 
 class INSERT:
+
     @staticmethod
     def article(article: Article) -> int:
         """

@@ -1,4 +1,18 @@
 import re
+from bs4 import BeautifulSoup
+from enums import (
+    HTMLKeyword,
+    HTMLProperty,
+    HTMLTag,
+    Pattern
+)
+
+
+COMMON_HTML_TAGS = [
+    HTMLTag.ARTICLE.value,
+    HTMLTag.SECTION.value,
+    HTMLTag.DIV.value
+]
 
 
 def is_valid_link(link: str, key: str) -> bool:
@@ -6,39 +20,49 @@ def is_valid_link(link: str, key: str) -> bool:
 
 
 def is_mail_link(link: str) -> bool:
-    return link.startswith("mailto")
+    return link.startswith(HTMLKeyword.MAILTO.value)
 
 
 def is_sliced_link(link: str) -> bool:
-    return link.startswith("/")
+    return link.startswith(HTMLKeyword.BACKSLASH.value)
 
 
 def is_html(link: str) -> bool:
-    return link.endswith(".html") or link.endswith(".htm")
+    return (
+        link.endswith(HTMLKeyword.DOT_HTML.value) or 
+        link.endswith(HTMLKeyword.DOT_HTM.value)
+    )
 
 
 def is_id_string(link: str) -> bool:
-    pattern = r"\b(?!-)(?:[a-f\d]+-){2,}[a-f\d]+(?!-)\b"
-    return bool(re.search(pattern, link))
+    return bool(
+        re.search(
+            Pattern.ID_STRING.value,
+            link
+        )
+    )
 
 
-def is_paywall(page: str) -> bool:
-    pattern = re.compile(r"^/signup.*", re.IGNORECASE)
-    tags = page.find_all("a", href=pattern)
-    print(tags)
+def is_paywall(page: BeautifulSoup) -> bool:
+    pattern = re.compile(Pattern.SIGNUP.value, re.IGNORECASE)
+    tags = page.find_all(HTMLTag.ANCHOR.value, href=pattern)
     if tags:
         return True
     return False
 
 
-def is_missing_title(page: str) -> bool:
-    title = page.find("meta", property="og:title")
+def is_missing_title(page: BeautifulSoup) -> bool:
+    title = page.find(
+        HTMLTag.META.value,
+        property=HTMLProperty.OG_TITLE.value
+    )
+
     if title:
         return False
     return True
 
 
-def is_article(visited: set, link: str, provider: str, page: str) -> bool:
+def is_article(visited: set, link: str, provider: str, page: BeautifulSoup) -> bool:
     if link in visited:
         return False
 
@@ -51,9 +75,7 @@ def is_article(visited: set, link: str, provider: str, page: str) -> bool:
     if is_missing_title(page):
         return False
 
-    common_html_tags = ["article", "section", "div"]
-
-    for tag in common_html_tags:
+    for tag in COMMON_HTML_TAGS:
         if page.find(tag):
             return True
 

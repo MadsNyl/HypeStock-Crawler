@@ -1,4 +1,5 @@
 class GET_QUERY:
+    
     @staticmethod
     def tickers() -> str:
         return """

@@ -1,4 +1,5 @@
 class CREATE_QUERY:
+    
     @staticmethod
     def provider() -> str:
         return """

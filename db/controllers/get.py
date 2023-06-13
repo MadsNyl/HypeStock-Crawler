@@ -3,6 +3,7 @@ from db.models import GET_QUERY
 
 
 class GET:
+    
     @staticmethod
     def tickers() -> dict:
         """
