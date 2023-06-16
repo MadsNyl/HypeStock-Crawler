@@ -3,7 +3,7 @@ class CREATE_QUERY:
     @staticmethod
     def provider() -> str:
         return """
-            CREATE TABLE provider(
+            CREATE TABLE newspaper(
                 provider varchar(255),
                 start_url varchar(255),
                 base_url varchar(255),
@@ -21,7 +21,7 @@ class CREATE_QUERY:
                 provider varchar(255),
                 created_date datetime DEFAULT NOW(),
                 PRIMARY KEY (id),
-                FOREIGN KEY (provider) REFERENCES provider (provider),
+                FOREIGN KEY (provider) REFERENCES newspaper (provider),
                 UNIQUE(url)
             );
         """
@@ -32,7 +32,7 @@ class CREATE_QUERY:
             CREATE TABLE article_stock (
                 symbol varchar(10),
                 article_id int,
-                FOREIGN KEY(symbol) REFERENCES stock(symbol),
+                FOREIGN KEY(symbol) REFERENCES ticker(symbol),
                 FOREIGN KEY(article_id) REFERENCES article(id)
             );
         """

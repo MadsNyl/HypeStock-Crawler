@@ -19,5 +19,5 @@ class GET_QUERY:
     def providers() -> str:
         return """
             SELECT *
-            FROM provider
+            FROM newspaper
         """

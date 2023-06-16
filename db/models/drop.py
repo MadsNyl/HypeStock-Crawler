@@ -18,5 +18,5 @@ class DROP_QUERY:
     def provider() -> str:
         return """
             DROP TABLE
-            provider
+            newspaper
         """
