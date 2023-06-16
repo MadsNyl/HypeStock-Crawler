@@ -106,4 +106,5 @@ class Crawler(Scraper):
                     queue.append(link)
                     self._URLS[link] = None
 
+        visited.discard(self._START_URL)
         return visited
