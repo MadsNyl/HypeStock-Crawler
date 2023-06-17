@@ -23,6 +23,10 @@ def is_mail_link(link: str) -> bool:
     return link.startswith(HTMLKeyword.MAILTO.value)
 
 
+def is_twitter_link(link: str) -> bool:
+    return link.startswith(HTMLKeyword.TWITTER.value)
+
+
 def is_sliced_link(link: str) -> bool:
     return link.startswith(HTMLKeyword.BACKSLASH.value)
 

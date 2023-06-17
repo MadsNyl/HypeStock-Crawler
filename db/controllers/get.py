@@ -1,5 +1,6 @@
 from db import pool
 from db.models import GET_QUERY
+from classes import Provider
 
 
 class GET:
@@ -33,7 +34,7 @@ class GET:
             print(f"Fetching all urls error: {e}")
 
     @staticmethod
-    def providers() -> list:
+    def providers() -> list[Provider]:
         """
         Returns all providers as a list.
         """
@@ -41,7 +42,16 @@ class GET:
         try:
             pool.execute(GET_QUERY.providers())
 
-            return pool.fetchall()
+            providers = pool.fetchall()
+
+            return [
+                Provider(
+                    provider=provider[0],
+                    start_url=provider[1],
+                    base_url=provider[2]
+                )
+                for provider in providers
+            ]
 
         except Exception as e:
             print(f"Fetching providers error: {e}")

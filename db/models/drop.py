@@ -1,10 +1,10 @@
 class DROP_QUERY:
     
     @staticmethod
-    def article_stock() -> str:
+    def article_ticker() -> str:
         return """
             DROP TABLE
-            article_stock
+            article_ticker
         """
 
     @staticmethod

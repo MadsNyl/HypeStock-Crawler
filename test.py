@@ -1,6 +1,5 @@
-def main(**kwargs):
-    header = kwargs.get("header")
-    print(header)
+from util import http_get
 
 
-main()
+res = http_get("https://www.washingtonpost.com/world/2023/06/17/children-plane-crash-survivors-amazon-colombia/", timeout=20)
+print(res)

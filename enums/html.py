@@ -20,6 +20,7 @@ class HTMLKeyword(Enum):
     BACKSLASH = "/"
     DOT_HTML = ".html"
     DOT_HTM = ".htm"
+    TWITTER = "https://twitter.com"
 
 
 class HTMLAttribute(Enum):

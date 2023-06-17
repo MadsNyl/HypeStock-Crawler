@@ -17,7 +17,7 @@ class CREATE:
             pool.execute(CREATE_QUERY.article())
             db.commit()
 
-            pool.execute(CREATE_QUERY.article_stock())
+            pool.execute(CREATE_QUERY.article_ticker())
             db.commit()
 
         except Exception as e:

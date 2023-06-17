@@ -6,6 +6,7 @@ from .validation import (
     is_id_string,
     is_article,
     is_mail_link,
+    is_twitter_link
 )
 from .progressbar import progressbar
 from .format import string_to_datetime, build_link

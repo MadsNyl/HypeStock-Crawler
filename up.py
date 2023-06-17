@@ -11,7 +11,8 @@ INSERT_DATA = [
     Provider("nytimes", "https://www.nytimes.com/", "www.nytimes.com"),
     Provider("financialpost", "https://financialpost.com/", "financialpost.com"),
     Provider("forbes", "https://www.forbes.com/", "www.forbes.com"),
-    Provider("reuters", "https://www.reuters.com/markets/", "www.reuters.com")
+    Provider("reuters", "https://www.reuters.com/markets/", "www.reuters.com"),
+    Provider("investors", "https://www.investors.com/", "www.investors.com")
 ]
 
 def main() -> None:

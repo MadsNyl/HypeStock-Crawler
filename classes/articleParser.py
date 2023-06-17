@@ -1,3 +1,6 @@
+from common_uppercase_words import UPPERCASE_WORDS
+
+
 class ArticleParser:
     _text: list[str]
     _hits = set()
@@ -8,7 +11,6 @@ class ArticleParser:
         self._text = self.__strip_parenthesis(text)
         self._TICKERS = tickers
         self._provider = provider
-        self.__get_hits()
 
     def __iter__(self) -> list[str]:
         return iter(self._hits)
@@ -19,13 +21,33 @@ class ArticleParser:
     def __getitem__(self, index) -> str:
         return self._hits[index]
 
-    def __get_hits(self) -> None:
+    def __str__(self) -> str:
+        return str(self._hits)
+
+    def get_tickers(self) -> list[str]:
+        hits = set()
         for index, word in enumerate(self._text):
+            if word in UPPERCASE_WORDS:
+                continue
+
             if word in self._TICKERS:
                 if self.__is_provider(word):
                     continue
 
-                if self.__is_start_of_sentence_pronoun(word, index):
+                if self.__is_in_uppercase_sentence(index):
+                    continue
+
+                hits.add(word)
+        
+        return hits
+
+    def __get_hits(self) -> None:
+        for index, word in enumerate(self._text):
+            if word in UPPERCASE_WORDS:
+                continue
+
+            if word in self._TICKERS:
+                if self.__is_provider(word):
                     continue
 
                 if self.__is_in_uppercase_sentence(index):
@@ -41,14 +63,6 @@ class ArticleParser:
             return True
 
         return False
-
-    def __is_start_of_sentence_pronoun(self, word: str, index: int) -> bool:
-        return (
-            word.isupper()
-            and index > 0
-            and self._text[index - 1] == "."
-            and len(word) == 1
-        )
 
     def __is_provider(self, word: str) -> bool:
         return word == self._provider.upper()

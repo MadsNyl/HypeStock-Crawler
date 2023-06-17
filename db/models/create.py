@@ -27,10 +27,10 @@ class CREATE_QUERY:
         """
 
     @staticmethod
-    def article_stock() -> str:
+    def article_ticker() -> str:
         return """
-            CREATE TABLE article_stock (
-                symbol varchar(10),
+            CREATE TABLE article_ticker (
+                symbol varchar(12),
                 article_id int,
                 FOREIGN KEY(symbol) REFERENCES ticker(symbol),
                 FOREIGN KEY(article_id) REFERENCES article(id)

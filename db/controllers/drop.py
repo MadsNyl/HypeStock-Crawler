@@ -11,7 +11,7 @@ class DROP:
         """
 
         try:
-            pool.execute(DROP_QUERY.article_stock())
+            pool.execute(DROP_QUERY.article_ticker())
             db.commit()
 
             pool.execute(DROP_QUERY.article())

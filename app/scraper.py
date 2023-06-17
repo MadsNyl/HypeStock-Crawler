@@ -29,7 +29,7 @@ class Scraper():
         except Exception as e:
             print(f"Fetching url error: {e}")
 
-    async def _get_html_async(self, url: str, proxy: str) -> str:
+    async def _get_html_async(self, url: str, proxy: str) -> BeautifulSoup:
         try:
             headers = {APIJson.USER_AGENT.value: USER_AGENT}
             proxies = {APIJson.HTTP.value: f"http://{proxy}"}
@@ -50,8 +50,22 @@ class Scraper():
 
     def _find(self, soup: BeautifulSoup, tag: str, **kwargs) -> NavigableString:
         return soup.find(tag, attrs=kwargs)
+    
+    def _find_page_text(self, page: NavigableString) -> NavigableString:
+        article_wrappers = [
+            HTMLTag.ARTICLE.value,
+            HTMLTag.SECTION.value
+        ]
 
-    def _get_metadata(self, page: str) -> MetaData:
+        for wrapper in article_wrappers:
+            new_page = self._find(page, wrapper)
+            if new_page:
+                return new_page
+        
+        return page
+
+
+    def _get_metadata(self, page: NavigableString) -> MetaData:
         meta_title = self._find(page, HTMLTag.META.value, property=HTMLProperty.OG_TITLE.value)
         title = None
         if meta_title:

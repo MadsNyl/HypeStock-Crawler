@@ -19,7 +19,7 @@ class INSERT_QUERY:
     @staticmethod
     def hit() -> str:
         return """
-            INSERT INTO article_stock
+            INSERT INTO article_ticker
             (symbol, article_id)
             VALUES (%s, %s)
         """

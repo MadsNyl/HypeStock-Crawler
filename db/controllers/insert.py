@@ -44,6 +44,7 @@ class INSERT:
             db.commit()
         except Exception as e:
             print(f"Inserting article and stock error: {e}")
+            print(article_id, ticker)
 
     @staticmethod
     def provider(provider: Provider) -> None:

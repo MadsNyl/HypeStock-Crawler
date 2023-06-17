@@ -4,7 +4,7 @@ class GET_QUERY:
     def tickers() -> str:
         return """
             SELECT symbol
-            FROM stock
+            FROM ticker
         """
 
     @staticmethod
