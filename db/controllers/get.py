@@ -55,3 +55,15 @@ class GET:
 
         except Exception as e:
             print(f"Fetching providers error: {e}")
+
+    @staticmethod
+    def article_words() -> dict[str, None]:
+        """
+        Returns all article_words as a dict.
+        """
+        try:
+            pool.execute(GET_QUERY.article_words())
+
+            return dict.fromkeys(list(map(lambda x: x[0], pool.fetchall())))
+        except Exception as e:
+            print(f"Fetching article_words error: {e}")

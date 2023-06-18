@@ -7,10 +7,11 @@ class ArticleParser:
     _TICKERS: dict[str]
     _provider: str
 
-    def __init__(self, text: str, tickers: dict[str], provider: str) -> None:
+    def __init__(self, text: str, tickers: dict[str], provider: str, article_words: list[str]) -> None:
         self._text = self.__strip_parenthesis(text)
         self._TICKERS = tickers
         self._provider = provider
+        self._ARTICLE_WORDS = article_words
 
     def __iter__(self) -> list[str]:
         return iter(self._hits)
@@ -27,7 +28,7 @@ class ArticleParser:
     def get_tickers(self) -> list[str]:
         hits = set()
         for index, word in enumerate(self._text):
-            if word in UPPERCASE_WORDS:
+            if word in self._ARTICLE_WORDS:
                 continue
 
             if word in self._TICKERS:
@@ -40,20 +41,6 @@ class ArticleParser:
                 hits.add(word)
         
         return hits
-
-    def __get_hits(self) -> None:
-        for index, word in enumerate(self._text):
-            if word in UPPERCASE_WORDS:
-                continue
-
-            if word in self._TICKERS:
-                if self.__is_provider(word):
-                    continue
-
-                if self.__is_in_uppercase_sentence(index):
-                    continue
-
-                self._hits.add(word)
 
     def __is_in_uppercase_sentence(self, index: int) -> bool:
         if index > 0 and self._text[index - 1].isupper():

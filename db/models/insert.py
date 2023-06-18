@@ -27,6 +27,15 @@ class INSERT_QUERY:
     @staticmethod
     def provider() -> str:
         return """
-            INSERT INTO newspaper (provider, start_url, base_url)
+            INSERT INTO newspaper 
+            (provider, start_url, base_url)
             VALUES (%s, %s, %s)
+        """
+
+    @staticmethod
+    def article_word() -> str:
+        return """
+            INSERT INTO article_word
+            (word, description)
+            VALUES (%s, %s)
         """

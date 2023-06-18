@@ -21,3 +21,10 @@ class GET_QUERY:
             SELECT *
             FROM newspaper
         """
+    
+    @staticmethod
+    def article_words() -> str:
+        return """
+            SELECT word
+            FROM article_word
+        """

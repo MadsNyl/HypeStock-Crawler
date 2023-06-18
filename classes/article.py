@@ -7,3 +7,9 @@ class Article():
     provider: str
     created_date: str
     title: str
+
+
+@dataclass
+class ArticleWord():
+    word: str
+    description: str

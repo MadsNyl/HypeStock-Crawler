@@ -1,0 +1,6 @@
+CREATE TABLE article_word (
+    id int AUTO_INCREMENT,
+    word varchar(6) UNIQUE,
+    description text,
+    PRIMARY KEY (id)
+);

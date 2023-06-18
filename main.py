@@ -1,5 +1,5 @@
-import sys
 import asyncio
+from sys import argv
 from app import Crawler, Scraper
 from classes import Provider, ProxyList, ArticleParser, Article
 from db import GET, INSERT
@@ -10,12 +10,16 @@ from util import timer
 
 PROXY_LIST = ProxyList()
 TICKERS = GET.tickers()
+URLS = GET.urls()
+ARTICLE_WORDS = GET.article_words()
 
 def crawl_articles(provider: Provider, cap: int) -> list[tuple[Provider, str]]:
     crawler = Crawler(
         start_url=provider.start_url,
         base_url=provider.base_url,
-        provider=provider.provider
+        provider=provider.provider,
+        tickers=TICKERS,
+        urls=URLS
     )
 
     article_links = crawler.crawl(PROXY_LIST, cap)
@@ -52,7 +56,8 @@ async def scrape(article: tuple[Provider, str]) -> None:
     article_parser = ArticleParser(
         text=article_wrapper.get_text(),
         tickers=TICKERS,
-        provider=provider.provider
+        provider=provider.provider,
+        article_words=ARTICLE_WORDS
     )
 
     tickers = article_parser.get_tickers()
@@ -85,6 +90,9 @@ async def scrape_articles(articles: list[tuple[Provider, str]]) -> None:
 def main():
     PROVIDERS = GET.providers()
     cap = 250
+
+    if len(argv) > 1:
+        cap = argv[1] 
 
     articles: list[tuple[Provider, str]] = []
     for provider in PROVIDERS:

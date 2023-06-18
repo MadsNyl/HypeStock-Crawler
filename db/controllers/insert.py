@@ -1,6 +1,6 @@
 from db import pool, db
 from db.models import INSERT_QUERY
-from classes import Article, Provider
+from classes import Article, Provider, ArticleWord
 
 
 class INSERT:
@@ -60,3 +60,22 @@ class INSERT:
             db.commit()
         except Exception as e:
             print(f"Inserting provider error: {e}")
+    
+    @staticmethod
+    def article_word(word: ArticleWord) -> int:
+        """
+        Inserts an article word.
+        """
+        try:
+            pool.execute(
+                INSERT_QUERY.article_word(),
+                (
+                    word.word,
+                    word.description
+                )
+            )
+
+            db.commit()
+            return pool.lastrowid
+        except Exception as e:
+            print(f"Inserting article word error: {e}")
