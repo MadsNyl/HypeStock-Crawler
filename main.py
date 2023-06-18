@@ -91,7 +91,7 @@ def main():
     cap = 250
 
     if len(argv) > 1:
-        cap = argv[1] 
+        cap = int(argv[1]) 
 
     articles: list[tuple[Provider, str]] = []
     for provider in PROVIDERS:
