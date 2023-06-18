@@ -28,8 +28,60 @@ def crawl_articles(provider: Provider, cap: int) -> list[tuple[Provider, str]]:
         for link in article_links
     ]
 
+def scrape(article: tuple[Provider, str]) -> None:
+    provider = article[0]
+    article_link = article[1]
 
-async def scrape(article: tuple[Provider, str]) -> None:
+    scraper = Scraper(
+        start_url=provider.start_url,
+        base_url=provider.base_url
+    )
+
+    article_html = scraper._get_html(article_link, PROXY_LIST.proxy)
+
+    if not article_html:
+        return
+    
+    metadata = scraper._get_metadata(article_html)
+
+    article_body = scraper._find(article_html, HTMLTag.BODY.value) 
+
+    if not article_body: 
+        return 
+    
+    article_wrapper = scraper._find_page_text(article_body)
+
+    article_parser = ArticleParser(
+        text=article_wrapper.get_text(),
+        tickers=TICKERS,
+        provider=provider.provider,
+        article_words=ARTICLE_WORDS
+    )
+
+    tickers = article_parser.get_tickers()
+
+    if not len(tickers):
+        return
+
+    article_id = INSERT.article(
+        Article(
+            url=article_link,
+            provider=provider.provider,
+            created_date=metadata.created_date,
+            title=metadata.title
+        )
+    )
+
+    if not article_id:
+        return
+    
+    for ticker in tickers:
+        INSERT.hit(
+            article_id=article_id,
+            ticker=ticker
+        )
+
+async def scrape_async(article: tuple[Provider, str]) -> None:
     provider = article[0]
     article_link = article[1]
 
@@ -83,7 +135,7 @@ async def scrape(article: tuple[Provider, str]) -> None:
         )
 
 async def scrape_articles(articles: list[tuple[Provider, str]]) -> None:
-    await asyncio.gather(*[scrape(article) for article in articles])
+    await asyncio.gather(*[scrape_async(article) for article in articles])
 
 
 def main():
@@ -92,6 +144,7 @@ def main():
 
     if len(argv) > 1:
         cap = int(argv[1]) 
+    
 
     articles: list[tuple[Provider, str]] = []
     for provider in PROVIDERS:
@@ -100,7 +153,9 @@ def main():
     if not len(articles):
         raise NoArticlesException("There are no articles to scrape at the moment.")
     
-    asyncio.run(scrape_articles(articles))
+    # asyncio.run(scrape_articles(articles))
+    for article in articles:
+        scrape(article)
 
 
 if __name__ == "__main__":
