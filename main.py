@@ -10,7 +10,6 @@ from util import timer
 
 PROXY_LIST = ProxyList()
 TICKERS = GET.tickers()
-URLS = GET.urls()
 ARTICLE_WORDS = GET.article_words()
 
 def crawl_articles(provider: Provider, cap: int) -> list[tuple[Provider, str]]:
@@ -19,7 +18,7 @@ def crawl_articles(provider: Provider, cap: int) -> list[tuple[Provider, str]]:
         base_url=provider.base_url,
         provider=provider.provider,
         tickers=TICKERS,
-        urls=URLS
+        urls=GET.urls(provider.provider)
     )
 
     article_links = crawler.crawl(PROXY_LIST, cap)
