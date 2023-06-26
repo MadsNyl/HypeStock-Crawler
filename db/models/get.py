@@ -28,3 +28,11 @@ class GET_QUERY:
             SELECT word
             FROM article_word
         """
+    
+    @staticmethod
+    def config_url() -> str:
+        return """
+            SELECT url
+            FROM config_file
+            WHERE name = %s;
+        """

@@ -1,5 +1,6 @@
 CREATE TABLE newspaper(
     provider varchar(255),
+    full_name varchar(255),
     start_url varchar(255),
     base_url varchar(255),
     PRIMARY KEY (provider)

@@ -1,0 +1,8 @@
+CREATE TABLE article_ticker (
+    symbol varchar(10),
+    article_id int,
+    FOREIGN KEY(symbol) REFERENCES stock(symbol),
+    FOREIGN KEY(article_id) 
+    REFERENCES article(id)
+    ON DELETE CASCADE
+);

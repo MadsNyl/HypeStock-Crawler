@@ -12,3 +12,4 @@ from .progressbar import progressbar
 from .format import string_to_datetime, build_link
 from .http import http_get, http_get_async
 from .article_word import insert_article_words
+from .config import load_config_settings

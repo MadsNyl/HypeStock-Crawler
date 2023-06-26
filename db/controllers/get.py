@@ -67,3 +67,16 @@ class GET:
             return dict.fromkeys(list(map(lambda x: x[0], pool.fetchall())))
         except Exception as e:
             print(f"Fetching article_words error: {e}")
+    
+
+    @staticmethod
+    def config_url():
+        """
+        Returns the url of the config.
+        """
+        try:
+            pool.execute(GET_QUERY.config_url(), ("config.json", ))
+
+            return pool.fetchone()[0]
+        except Exception as e:
+            print(f"Fetching config url error: {e}")

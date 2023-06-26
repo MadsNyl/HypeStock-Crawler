@@ -5,7 +5,7 @@ from classes import Provider, ProxyList, ArticleParser, Article
 from db import GET, INSERT
 from errors import NoArticlesException
 from enums import HTMLTag
-from util import timer
+from util import timer, load_config_settings
 
 
 PROXY_LIST = ProxyList()
@@ -140,22 +140,28 @@ async def scrape_articles(articles: list[tuple[Provider, str]]) -> None:
 
 def main():
     PROVIDERS = GET.providers()
-    cap = 250
+    config = load_config_settings()
 
-    if len(argv) > 1:
-        cap = int(argv[1]) 
-    
+    cap = 15
+    async_scraping = False
+
+    if config:
+        cap = config["article"]["limit"]
+        async_scraping = config["article"]["async"]
+
 
     articles: list[tuple[Provider, str]] = []
     for provider in PROVIDERS:
-        articles += crawl_articles(provider, cap)
+        articles += crawl_articles(provider, int(cap))
     
     if not len(articles):
         raise NoArticlesException("There are no articles to scrape at the moment.")
     
-    # asyncio.run(scrape_articles(articles))
-    for article in articles:
-        scrape(article)
+    if async_scraping:
+        asyncio.run(scrape_articles(articles))
+    else:
+        for article in articles:
+            scrape(article)
 
 
 if __name__ == "__main__":
