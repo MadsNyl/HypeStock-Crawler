@@ -1,5 +1,4 @@
 import asyncio
-from sys import argv
 from app import Crawler, Scraper
 from classes import Provider, ProxyList, ArticleParser, Article
 from db import GET, INSERT

@@ -8,6 +8,7 @@ class HTMLTag(Enum):
     DIV = "div"
     ANCHOR = "a"
     BODY = "body"
+    TITLE = "title"
 
 
 class HTMLProperty(Enum):

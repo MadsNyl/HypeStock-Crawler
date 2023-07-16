@@ -70,6 +70,10 @@ class Scraper():
         title = None
         if meta_title:
             title = meta_title.get(HTMLAttribute.CONTENT.value)
+        else:
+            title_tag = self._find(page, HTMLTag.TITLE.value)
+            if title_tag:
+                title = title_tag.get_text()
 
         meta_created_date = self._find(page, HTMLTag.META.value, property=HTMLProperty.PUBLISHED_DATE.value)
         created_date = None

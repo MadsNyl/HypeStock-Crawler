@@ -4,6 +4,7 @@ CREATE TABLE article (
     url varchar(255),
     provider varchar(255),
     created_date datetime DEFAULT NOW(),
+    collected_date datetime DEFAULT NOW(),
     PRIMARY KEY (id),
     FOREIGN KEY (provider) 
     REFERENCES provider (provider)

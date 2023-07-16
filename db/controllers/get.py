@@ -55,6 +55,30 @@ class GET:
 
         except Exception as e:
             print(f"Fetching providers error: {e}")
+    
+    @staticmethod
+    def provider(name: str) -> Provider:
+        """
+        Returns a given provider.
+        """
+
+        try:
+            pool.execute(
+                GET_QUERY.provider(),
+                (name, )
+            )
+
+            provider = pool.fetchone()
+
+            return Provider(
+                    provider=provider[0],
+                    start_url=provider[1],
+                    base_url=provider[2]
+                )
+                
+
+        except Exception as e:
+            print(f"Fetching providers error: {e}")
 
     @staticmethod
     def article_words() -> dict[str, None]:

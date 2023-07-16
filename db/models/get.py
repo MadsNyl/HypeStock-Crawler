@@ -23,6 +23,14 @@ class GET_QUERY:
         """
     
     @staticmethod
+    def provider() -> str:
+        return """
+            SELECT *
+            FROM newspaper
+            WHERE provider = %s;
+        """
+
+    @staticmethod
     def article_words() -> str:
         return """
             SELECT word

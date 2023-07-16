@@ -10,6 +10,9 @@ format:
 run:
 	python main.py ${args}
 
+test:
+	python test.py ${args}
+
 down:
 	python down.py
 
